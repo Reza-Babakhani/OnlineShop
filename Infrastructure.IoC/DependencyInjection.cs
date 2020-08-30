@@ -17,7 +17,12 @@ namespace Infrastructure.IoC
         {
             services.AddDbContextPool<ApplicationDbContext>(options => options.UseSqlServer(ConnsetionStrings.AppDbContext_Development_ConnectionString));
 
-            services.AddIdentity<ApplicationUser,IdentityRole>()
+            services.AddIdentity<ApplicationUser,IdentityRole>(options=>
+            {
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
+
+            })
                 .AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddErrorDescriber<PersianIdentityErrorDescriber>();

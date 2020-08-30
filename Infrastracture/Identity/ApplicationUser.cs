@@ -19,7 +19,6 @@ namespace Infrastructure.Identity
 
         public bool NewsSubscribe { get; set; }
 
-
-
+        
     }
 }

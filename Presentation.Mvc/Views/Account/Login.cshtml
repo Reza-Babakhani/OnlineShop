@@ -1,0 +1,46 @@
+﻿@model Application.ViewModels.Account.LoginViewModel
+
+@{
+    Layout = "_BlankLayout";
+    ViewData["Title"] = "ورود به حساب کاربری";
+}
+
+    <a asp-controller="Home" asp-action="Index" class="logo-account"><img src="~/assets/images/logo.png"></a>
+    <div class="col-lg-4 col-md-6 col-xs-12 mx-auto">
+        <div class="account-box">
+            <span class="account-head-line">ورود به دیجی‌استور</span>
+            <div class="content-account">
+                <form asp-action="Login" method="post" asp-route-returnUrl="@ViewData["returnUrl"]">
+                <div asp-validation-summary="All" class="message-light text-danger"></div>
+
+                <label asp-for="UserNameOrEmail"></label>
+                <input id="email-phone" class="input-email-account" asp-for="UserNameOrEmail" placeholder="نام کاربری یا ایمیل خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 55px;"></span>
+                <a asp-controller="Account" asp-action="ForgetPassword" class="account-link-password">رمز خود را فراموش کرده ام</a>
+                <label asp-for="Password"></label>
+                <input id="password" class="input-password" asp-for="Password" placeholder="رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 146px;"></i>
+
+
+                <div class="parent-btn">
+                    <button type="submit" class="dk-btn dk-btn-info">
+                        ورود به دیجی استور
+                        <i class="fa fa-sign-in sign-in"></i>
+                    </button>
+                </div>
+
+                <div class="form-auth-row">
+                    <label for="#" class="ui-checkbox">
+                        <input asp-for="RemmberMe" value="true" checked="" id="remember">
+                        <span class="ui-checkbox-check"></span>
+                    </label>
+                    <label asp-for="RemmberMe" class="remember-me"></label>
+                </div>
+                </form>
+            </div>
+
+            <div class="account-footer">
+                <span>کاربر جدید هستید؟</span>
+                <a asp-action="SignUp" class="btn-link-register">ثبت‌ نام در دیجی‌استور</a>
+            </div>
+        </div>
+    </div>
+ 

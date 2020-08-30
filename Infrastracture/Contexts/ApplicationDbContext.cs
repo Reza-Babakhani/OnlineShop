@@ -13,5 +13,12 @@ namespace Infrastructure.Contexts
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => u.PhoneNumber)
+                .IsUnique();
+        }
     }
 }
