@@ -5,28 +5,63 @@
     ViewData["Title"] = "ایجاد حساب کاربری";
 }
 
+
 <a asp-action="Index" asp-controller="Home" class="logo-account"><img src="~/assets/images/logo.png"></a>
 <div class="col-lg-4 col-md-6 col-xs-12 mx-auto">
     <div class="account-box">
         <span class="account-head-line">ثبت نام در دیجی‌استور</span>
         <form asp-action="SignUp" method="post" asp-route-returnUrl="@ViewData["returnUrl"]">
 
-            <div class="content-account">
+            <div class="content-account" style="direction:ltr;text-align:right;">
 
+                <div class="form-group ">
+                    
+                    <label asp-for="UserName" ></label>
 
-                <label asp-for="UserName"></label>
-                <input class="input-email-account" asp-for="UserName" placeholder="نام کاربری خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 55px;"></span>
+                    <div class="input-group ">
+                        <input class="form-control" asp-for="UserName" placeholder=" نام کاربری خود را وارد کنید">
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-user"></i></div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="UserName" class="text-danger"></span>
+                </div>
 
-                <label asp-for="Email"></label>
-                <input class="input-email-account" asp-for="Email" placeholder="ایمیل خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 146px;"></span>
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <div class="input-group ">
+                        <input class="form-control" asp-for="Email" aria-describedby="emailHelp" placeholder=" ایمیل خود را وارد کنید">
 
-                <label asp-for="Password"></label>
-                <input class="input-password" asp-for="Password" placeholder="رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 237px;"></i>
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-envelope"></i></div>
+                        </div>
+                    </div>
+                     <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <div class="input-group ">
+                        <input class="form-control" asp-for="Password" placeholder=" رمزعبور خود را وارد کنید">
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
 
-                <label asp-for="ComfirmPassword"></label>
-                <input class="input-password" asp-for="ComfirmPassword" placeholder="تکرار رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 328px;"></i>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword"></label>
+                    <div class="input-group ">
+                        <input class="form-control" asp-for="ConfirmPassword" placeholder=" تکرار رمزعبور خود را وارد کنید">
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
 
-                <div asp-validation-summary="All" class="message-light text-danger"></div>
+             
+                <div asp-validation-summary="ModelOnly" class="message-light text-danger"></div>
 
 
                 <div class="parent-btn">
@@ -52,3 +87,8 @@
         </div>
     </div>
 </div>
+@section Scripts{
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+
+}
+

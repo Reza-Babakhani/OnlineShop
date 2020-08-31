@@ -10,17 +10,34 @@
     <div class="account-box">
         <span class="account-head-line">ورود به دیجی‌استور</span>
         <form asp-action="Login" method="post" asp-route-returnUrl="@ViewData["returnUrl"]">
-            <div class="content-account">
+            <div class="content-account"  style="direction:ltr;text-align:right;">
 
+                <div class="form-group">
+                    <label asp-for="UserNameOrEmail"></label>
+                    <div class="input-group ">
+                        <input class="form-control" asp-for="UserNameOrEmail" placeholder="نام کاربری یا رمزعبور خود را وارد کنید">
 
-                <label asp-for="UserNameOrEmail"></label>
-                <input id="email-phone" class="input-email-account" asp-for="UserNameOrEmail" placeholder="نام کاربری یا ایمیل خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 55px;"></span>
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-user-circle"></i></div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="UserNameOrEmail" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <div class="input-group ">
+                        <input class="form-control" asp-for="Password" placeholder=" رمزعبور خود را وارد کنید">
+                        <div class="input-group-append">
+                            <div class="input-group-text"><i class="fa fa-lock"></i></div>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
 
-                <label asp-for="Password"></label>
-                <input id="password" class="input-password" asp-for="Password" placeholder="رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 146px;"></i>
+                </div>
 
+              
 
-                <div asp-validation-summary="All" class="message-light text-danger"></div>
+                <div asp-validation-summary="ModelOnly" class="message-light text-danger"></div>
 
                 <div class="parent-btn">
                     <button type="submit" class="dk-btn dk-btn-info">
