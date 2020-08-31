@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿
+@{
+    //بدلیل اینکه تمپ دیتا توانایی سریالایز آبجکت را در ریدایرکت را ندارد از جی سان استفاده شده
+    SweetAlert sa=new SweetAlert();
+    if (TempData["SweetAlert"] != null)
+    {
+        sa = Newtonsoft.Json.JsonConvert.DeserializeObject<SweetAlert>(TempData["SweetAlert"].ToString());
+    }
+    else
+    {
+        sa = null;
+    }
+}
+<!DOCTYPE html>
 <html lang="fa">
 <head>
     <meta charset="UTF-8">
@@ -14,8 +27,11 @@
     <link rel="stylesheet" href="~/assets/css/bootstrap.css">
     <link rel="stylesheet" href="~/assets/css/owl.carousel.min.css">
     <link rel="stylesheet" href="~/assets/css/style.css">
+    <link href="~/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
 </head>
 <body>
+
+
 
     <partial name="_Header" />
 
@@ -29,5 +45,27 @@
     <script src="~/assets/js/jquery.countdown.min.js"></script>
     <script src="~/assets/js/bootstrap.js"></script>
     <script src="~/assets/js/main.js"></script>
+    <script src="~/libs/sweetalert2/sweetalert2.min.js"></script>
+
+    @if (sa!= null)
+    {
+        <script>
+        $(document).ready(function () {
+
+                swal.fire({
+                    title: '@sa.Title',
+                    icon: '@sa.Icon.ToString()',
+                    confirmButtonText: '@sa.ComfirmButtonText',
+                    cancelButtonText: '@sa.CancelButtonText',
+                    showCancelButton:@sa.ShowCancelButton.ToString().ToLower(),
+                    showCloseButton: @sa.ShowCloseButton.ToString().ToLower(),
+                    html: '@sa.Text.ToString()'
+                });
+
+        });
+        </script>
+    }
+    
+
 </body>
 </html>

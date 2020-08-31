@@ -111,9 +111,9 @@
                         var user = await _userManager.GetUserAsync(User);
 
                         <a asp-controller="Profile" asp-action="Index" class="login-link">
-                            <button class="btn-login">
+                            <button class="btn-login" style="text-align:center;">
                                 <span class="mdi mdi-account-outline"></span>
-                                پروفایل
+                                ورود به پروفایل
                                 <div class="dropdown-menu-login">
                                     <div class="header-profile-dropdown-account">
                                         <div class="header-profile-dropdown-user">
@@ -121,19 +121,21 @@
                                                 <img src="assets/images/svg/user-profile.svg">
                                             </div>
                                             <div class="header-profile-dropdown-user-info">
-                                                <p class="header-profile-dropdown-user-name">
 
-                                                    @if (string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.FirstName))
-                                                    {
-                                                        <span> @user.Email</span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span> @user.FirstName @user.LastName</span>
 
-                                                    }
-                                                    @*<span class="header-profile-dropdown-user-profile-link">مشاهده حساب کاربری</span>*@
-                                                </p>
+                                                @if (string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.FirstName))
+                                                {
+                                                    <p class="header-profile-dropdown-user-name">
+                                                        @user.Email
+                                                    </p>
+                                                }
+                                                else
+                                                {
+                                                    <p class="header-profile-dropdown-user-name"> @user.FirstName @user.LastName</p>
+
+                                                }
+                                                @*<span class="header-profile-dropdown-user-profile-link">مشاهده حساب کاربری</span>*@
+
                                             </div>
                                             @*<div class="header-profile-dropdown-account">
                                                     <div class="header-profile-dropdown-account-item">
@@ -161,10 +163,8 @@
                                                 <a href="#" class="header-profile-dropdown-action-link">جوایز دیجی‌کلاب</a>
                                             </div>*@
                                         <div class="header-profile-dropdown-action-container">
-                                            <form asp-action="Logout" asp-controller="Account" method="post">
-                                                <button type="submit" class="header-profile-dropdown-action-link">خروج از حساب کاربری</button>
+                                            <a asp-action="Logout" asp-controller="Account" class="header-profile-dropdown-action-link">خروج از حساب کاربری</a>
 
-                                            </form>
                                         </div>
                                     </div>
                                 </div>

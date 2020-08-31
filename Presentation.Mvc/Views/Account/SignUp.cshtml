@@ -9,20 +9,24 @@
 <div class="col-lg-4 col-md-6 col-xs-12 mx-auto">
     <div class="account-box">
         <span class="account-head-line">ثبت نام در دیجی‌استور</span>
-        <div class="content-account">
-            <form asp-action="SignUp" method="post" asp-route-returnUrl="@ViewData["returnUrl"]">
-                <div asp-validation-summary="All" class="message-light text-danger"></div>
+        <form asp-action="SignUp" method="post" asp-route-returnUrl="@ViewData["returnUrl"]">
+
+            <div class="content-account">
 
 
                 <label asp-for="UserName"></label>
-                <input  class="input-email-account" asp-for="UserName" placeholder="نام کاربری خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 55px;"></span>
+                <input class="input-email-account" asp-for="UserName" placeholder="نام کاربری خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 55px;"></span>
+
                 <label asp-for="Email"></label>
-                <input  class="input-email-account" asp-for="Email" placeholder="ایمیل خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 55px;"></span>
+                <input class="input-email-account" asp-for="Email" placeholder="ایمیل خود را وارد نمایید"><span class="mdi mdi-account-outline" style="top: 146px;"></span>
 
                 <label asp-for="Password"></label>
-                <input  class="input-password" asp-for="Password" placeholder="رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 146px;"></i>
+                <input class="input-password" asp-for="Password" placeholder="رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 237px;"></i>
+
                 <label asp-for="ComfirmPassword"></label>
-                <input  class="input-password" asp-for="ComfirmPassword" placeholder="تکرار رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 146px;"></i>
+                <input class="input-password" asp-for="ComfirmPassword" placeholder="تکرار رمز عبور خود را وارد نمایید"><i class="mdi mdi-lock" style="top: 328px;"></i>
+
+                <div asp-validation-summary="All" class="message-light text-danger"></div>
 
 
                 <div class="parent-btn">
@@ -32,15 +36,15 @@
                     </button>
                 </div>
                 @*<div class="form-auth-row">
-                        <label for="#" class="ui-checkbox">
-                            <input type="checkbox" value="1" name="login" checked="" id="remember">
-                            <span class="ui-checkbox-check"></span>
-                        </label>
-                        <label for="remember" class="remember-me"><a href="#">حریم خصوصی</a> و <a href="#">شرایط قوانین</a>استفاده از سرویس های سایت دیجی‌استور را مطالعه نموده و با کلیه موارد آن موافقم.</label>
-                    </div>*@
+            <label for="#" class="ui-checkbox">
+                <input type="checkbox" value="1" name="login" checked="" id="remember">
+                <span class="ui-checkbox-check"></span>
+            </label>
+            <label for="remember" class="remember-me"><a href="#">حریم خصوصی</a> و <a href="#">شرایط قوانین</a>استفاده از سرویس های سایت دیجی‌استور را مطالعه نموده و با کلیه موارد آن موافقم.</label>
+        </div>*@
 
-            </form>
-        </div>
+            </div>
+        </form>
 
         <div class="account-footer">
             <span>قبلا در دیجی‌استور ثبت‌ نام کرده‌اید؟</span>
