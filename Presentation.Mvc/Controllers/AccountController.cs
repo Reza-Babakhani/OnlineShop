@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Presentation.Mvc.Extensions;
 using Presentation.Mvc.Models;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Presentation.Mvc.Controllers
 {
@@ -107,16 +108,16 @@ namespace Presentation.Mvc.Controllers
 
             if (result.Succeeded)
             {
-                
-                TempData["SweetAlert"] =JsonConvert.SerializeObject( new SweetAlert()
+
+                TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
                 {
                     Title = "تایید ایمیل",
                     Text = "ایمیل شما با موفقیت تایید شد",
-                    Icon=SweetAlertIcon.success,
-                    ShowCloseButton=false,
-                    CancelButtonText="",
-                    ComfirmButtonText="حله",
-                    ShowCancelButton=false
+                    Icon = SweetAlertIcon.success,
+                    ShowCloseButton = false,
+                    CancelButtonText = "",
+                    ComfirmButtonText = "حله",
+                    ShowCancelButton = false
                 });
             }
             else
@@ -125,10 +126,10 @@ namespace Presentation.Mvc.Controllers
 
                 foreach (var e in result.Errors)
                 {
-                    error +=$"\n {e.Description}.";
+                    error += $"\n {e.Description}.";
                 }
 
-                TempData["SweetAlert"] =JsonConvert.SerializeObject( new SweetAlert()
+                TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
                 {
                     Title = "تایید ایمیل",
                     Text = error,
@@ -227,6 +228,120 @@ namespace Presentation.Mvc.Controllers
             }
 
             return Json("نام کاربری انتخاب شده از قبل موجود است");
+        }
+
+
+        [HttpGet]
+        public IActionResult ForgetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var resetPassToken =await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var emailMessage = Url.Action("ResetPassword", "Account", new { userName = user.UserName, token = resetPassToken }, Request.Scheme);
+                    var body = await this.RenderViewAsync("~/Views/EmailTemplates/ResetPasswordEmailTemplate.cshtml", emailMessage);
+
+                    var emailResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Email Comfirmation", body, user.Email, true);
+
+                    if (emailResult.IsSuccess)
+                    {
+                        TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
+                        {
+                            Title = "عملیات موفق",
+                            Text = "ایمیل تغییر رمزعبور با موفقیت ارسال شد",
+                            Icon = SweetAlertIcon.success,
+                            ShowCloseButton = false,
+                            CancelButtonText = "",
+                            ComfirmButtonText = "حله",
+                            ShowCancelButton = false
+                        });
+
+                       return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Email doesn't send", "ارسال ایمیل تغییر رمزعبور با خطا مواجه شد");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("User Not Found", "کاربری با این مشخصات یافت نشد");
+
+                }
+
+
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string userName, string token)
+        {
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(token))
+                return NotFound();
+
+            var model = new ResetPasswordViewModel
+            {
+                Token = token,
+                UserName = userName
+            };
+
+            return View(model);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.UserName) || string.IsNullOrEmpty(model.Token))
+                return NotFound();
+
+            if (ModelState.IsValid)
+            {
+                var user =await _userManager.FindByNameAsync(model.UserName);
+                if (user == null)
+                    return NotFound();
+
+                var result =await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+
+                if (result.Succeeded)
+                {
+                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
+                    {
+                        Title = "تغییر رمزعبور",
+                        Text = "رمزعبور شما با موفقیت تغییر کرد",
+                        Icon = SweetAlertIcon.success,
+                        ShowCloseButton = false,
+                        CancelButtonText = "",
+                        ComfirmButtonText = "حله",
+                        ShowCancelButton = false
+                    });
+
+                   return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    foreach(var error in result.Errors)
+                    {
+                        ModelState.AddModelError(error.Code,error.Description);
+
+                    }
+                }
+            }
+
+            return View(model);
+
         }
     }
 }
