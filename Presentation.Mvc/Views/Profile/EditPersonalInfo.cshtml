@@ -1,0 +1,173 @@
+﻿@model Application.ViewModels.Profile.ProfileEditDetails
+
+@{
+    ViewData["Title"] = "ویرایش پروفایل کاربر";
+
+    int nowYear = Application.Utilities.PersianDateHelper.GetPersianYear(DateTime.Now);
+}
+
+<partial name="_ProfileSideBar" model="ViewBag.SideBarModel" />
+
+<div class="col-lg-9 col-md-8 col-xs-12 pull-right">
+    <div class="col-lg-12 col-xs-12 pull-right">
+        <div class="profile-navbar">
+            <div class="profile-navbar-back-alignment">
+                <a asp-action="Index" class="profile-navbar-btn-back">بازگشت</a>
+                <h4 class="edit-personal">
+                    ویرایش اطلاعات شخصی
+
+                </h4>
+            </div>
+        </div>
+        <form asp-action="EditPersonalInfo" method="post">
+
+
+            <div class="profile-stats">
+                <div class="form-legal-row">
+                    <div class="col-lg-6 col-xs-12 mx-auto">
+                        <div class="form-legal-col">
+                            <fieldset class="form-legal-fieldset">
+                                <h4 class="form-legal-headline">حساب شخصی</h4>
+                                <div asp-validation-summary="All" class="text-danger"></div>
+
+
+                                <div class="form-legal-item">
+                                    <label for="name-first">نام</label>
+                                    <input asp-for="FirstName" class="input-name-first" placeholder="نام خود را وارد کنید">
+                                </div>
+
+                                <div class="form-legal-item">
+                                    <label for="name-last">نام خانوادگی</label>
+                                    <input asp-for="LastName" class="input-name-last" placeholder="نام خانوادگی خود را وارد کنید">
+                                </div>
+
+                                <div class="form-legal-item">
+                                    <label for="selectric">تاریخ تولد</label>
+                                    <select asp-for="BirthDayDay" id="data">
+                                        @*<option value="date-desc" >روز</option>*@
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+
+                                    </select>
+                                    <select asp-for="BirthDayMonth" id="data">
+
+                                        @*<option value="date-desc" >ماه</option>*@
+                                        <option value="1">فروردین</option>
+                                        <option value="2">اردیبهشت</option>
+                                        <option value="3">خرداد</option>
+                                        <option value="4">تیر</option>
+                                        <option value="5">مرداد</option>
+                                        <option value="6">شهریور</option>
+                                        <option value="7">مهر</option>
+                                        <option value="8">آبان</option>
+                                        <option value="9">آذر</option>
+                                        <option value="10">دی</option>
+                                        <option value="11">بهمن</option>
+                                        <option value="12">اسفند</option>
+                                    </select>
+                                    <select asp-for="BirthDayYear" id="data">
+                                        @*<option value="date-desc" >سال</option>*@
+                                        @for (int i = nowYear; i >= nowYear - 100; i--)
+                                        {
+                                            @if (Model.BirthDayYear != 0 && i == Model.BirthDayYear)
+                                            {
+                                                <option value="@i" selected>@i</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@i">@i</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+
+                                <div class="form-legal-item">
+                                    <label for="code-national">کد ملی</label>
+                                    <input asp-for="PersonalCode" class="input-code-national" placeholder="کد ملی خود را وارد کنید">
+                                </div>
+
+                                @*<div class="form-legal-item has-diviter-item">
+            <div class="form-auth-row">
+                <label for="#" class="ui-checkbox has-diviter">
+                    <input type="checkbox" value="1" name="login" checked="" id="remember">
+                    <span class="ui-checkbox-check"></span>
+                </label>
+                <label for="remember" class="remember-me has-diviter-remember-me">تبعه خارجی فاقد کد ملی هستم</label>
+            </div>
+        </div>*@
+
+                                <div class="form-legal-item">
+                                    <label for="phone">شماره موبایل</label>
+                                    <input asp-for="MobileNumber" class="input-code-national" placeholder="شماره موبایل خود را وارد کنید">
+                                </div>
+
+                                <div class="form-legal-item">
+                                    <label for="email">آدرس ایمیل</label>
+                                    <input asp-for="Email" class="input-code-national" placeholder="آدرس ایمیل خود را وارد کنید">
+                                </div>
+
+                                <div class="form-legal-item has-diviter-item">
+                                    <div class="form-auth-row">
+                                        <label for="#" class="ui-checkbox has-diviter">
+                                            <input value="true" asp-for="NewsSubscribe" id="remember">
+                                            <span class="ui-checkbox-check"></span>
+                                        </label>
+                                        <label for="remember" class="remember-me has-diviter-remember-me">اشتراک در خبرنامه دیجی‌استور</label>
+                                    </div>
+                                    <label for="number-card" class="number-card">شماره کارت</label>
+                                    <input asp-for="CreditCardNumber" class="input-code-national" placeholder="شماره کارت خود را وارد کنید">
+
+                                    @* <input asp-for="CreditCardNumber" class="input-number-card" placeholder="شماره کارت خود را وارد کنید">*@
+                                    @*<button class="check-btn">بررسی اطلاعات</button>*@
+                                </div>
+
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+           
+                <div class="form-legal-row-submit">
+
+                    <div class="parent-btn">
+                        <button type="submit" class="dk-btn dk-btn-info">
+                            ثبت اطلاعات کاربری
+                            <i class="fa fa-check sign-in"></i>
+                        </button>
+                    </div>
+                    <a asp-action="Index" class="btn-default">انصراف</a>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+</div>

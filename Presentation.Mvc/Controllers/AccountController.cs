@@ -95,7 +95,7 @@ namespace Presentation.Mvc.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ComfirmEmailAsync(string userName, string token)
+        public async Task<IActionResult> ComfirmEmail(string userName, string token)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(token))
                 return NotFound();

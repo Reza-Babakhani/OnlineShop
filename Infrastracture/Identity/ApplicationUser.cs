@@ -19,6 +19,15 @@ namespace Infrastructure.Identity
 
         public bool NewsSubscribe { get; set; }
 
-        
+        [MaxLength(10)]
+        [MinLength(10)]
+        public string PersonalCode { get; set; }
+
+        [MaxLength(16)]
+        [MinLength(16)]
+        public string CreditCardNumber { get; set; }
+
+        public string ImagePath { get; set; }
+
     }
 }
