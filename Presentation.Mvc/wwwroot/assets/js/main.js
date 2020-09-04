@@ -222,7 +222,7 @@ $(document).ready(function(){
         date: (new Date()).getTime() + 180 * 1000, // 1 minute later
         text: '<span class="day">%s</span><span class="hour">%s</span><span>: %s</span><span>%s</span>',
         end: function() {
-            $countdownOptionEnd.html("<a href='' class='link-border-verify form-account-link'>ارسال مجدد</a>");
+            $countdownOptionEnd.html("<a href='/Account/VerifyMobile' class='link-border-verify form-account-link'>ارسال مجدد</a>");
         }
         });
         }

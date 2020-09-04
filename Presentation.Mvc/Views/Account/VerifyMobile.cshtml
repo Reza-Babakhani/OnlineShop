@@ -1,0 +1,60 @@
+﻿
+@inject Microsoft.AspNetCore.Identity.UserManager<Infrastructure.Identity.ApplicationUser> _userManager;
+@{
+    ViewData["Title"] = "تایید شماره موبایل";
+    Layout = "_BlankLayout";
+
+    var user =await _userManager.GetUserAsync(User);
+}
+
+
+
+<div class="col-lg-4 col-md-6 col-xs-12 mx-auto">
+    <div class="account-box">
+        <form asp-action="VerifyMobile" asp-controller="Account" method="post">
+
+
+            <div class="message-light">
+                <div class="massege-light">
+                    برای شماره همراه @user.PhoneNumber کد تایید ارسال گردید
+                    <br>
+                    <a asp-action="EditPersonalInfo" asp-controller="Profile" class="form-edit-number">
+                        ویرایش شماره
+                    </a>
+                </div>
+                <div class="form-account">
+                    <div class="form-account-title">کد تایید را وارد کنید</div>
+                    <div class="form-account-row">
+                        <div class="lines-number-input">
+                            <input type="text" class="line-number-account" name="d1" maxlength="1" required>
+                            <input type="text" class="line-number-account" name="d2" maxlength="1" required>
+                            <input type="text" class="line-number-account" name="d3" maxlength="1" required>
+                            <input type="text" class="line-number-account" name="d4" maxlength="1" required>
+                            <input type="text" class="line-number-account" name="d5" maxlength="1" required>
+                            <input type="text" class="line-number-account" name="d6" maxlength="1" required>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="parent-btn">
+                    <button type="submit" class="dk-btn dk-btn-info">
+                        تایید
+                        <i class="fa fa-send sign-in"></i>
+                    </button>
+                </div>
+                <div class="form-account-row">
+                    دریافت مجدد کد تایید(
+                    <p id="countdown-verify-end"><span class="day">0</span><span class="hour">0</span><span>:2</span><span>58</span></p>
+                    )
+                </div>
+                <p class="text-danger">
+                    @ViewData["Errors"]?.ToString()
+                </p>
+            </div>
+            @*<div class="account-footer">
+                <span>کاربر جدید هستید؟</span>
+                <a asp-action="SignUp" asp-controler="Account" class="btn-link-register">ثبت‌ نام در دیجی‌استور</a>
+            </div>*@
+        </form>
+    </div>
+</div>

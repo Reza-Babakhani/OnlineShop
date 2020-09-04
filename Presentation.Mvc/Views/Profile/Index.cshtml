@@ -1,19 +1,43 @@
 ﻿@model Application.ViewModels.Profile.ProfileIndexViewModel
+@inject Microsoft.AspNetCore.Identity.UserManager<Infrastructure.Identity.ApplicationUser> _userManager;
 
 @{
     ViewData["Title"] = "پروفایل کاربر";
+
+    var user = await _userManager.GetUserAsync(User);
 }
 
 
 
-<partial name="_ProfileSideBar" model="Model.SideBarViewModel"/>
+<partial name="_ProfileSideBar" model="Model.SideBarViewModel" />
 
 
 
-<div class="col-lg-9 col-md-8 col-xs-12 pull-right">
+
+<div class="col-lg-9 col-md-8 col-xs-12 pull-right" style="margin-top:140px;">
+
+    @if ((!await _userManager.IsPhoneNumberConfirmedAsync(user))&&!string.IsNullOrEmpty(user.PhoneNumber))
+    {
+        <div class="alert alert-danger" role="alert">
+            <p>شماره موبایل شما تایید نشده است. <a asp-action="VerifyMobile" asp-controller="Account" class="btn btn-success">تایید شماره موبایل</a></p>
+
+        </div>
+
+    }
+
+    @if (!await _userManager.IsEmailConfirmedAsync(user))
+    {
+        <div class="alert alert-danger" role="alert">
+            <p>ایمیل شما تایید نشده است. <a asp-action="VerifyEmail" asp-controller="Account" class="btn btn-success">تایید ایمیل</a></p>
+
+        </div>
+
+    }
+
     <!--PersonalInfo-->
     <div class="col-lg-6 col-xs-12 pull-right">
-        <div class="headline-profile">
+        <div class="headline-profile" style="margin-top:0;">
+
             <span>اطلاعات شخصی</span>
         </div>
         <div class="profile-stats">
@@ -21,26 +45,6 @@
                 <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
                     <div class="profile-stats-col">
                         <p><span> نام و نام خانوادگی :</span>@Model.ProfileInformations.FullName</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
-                    <div class="profile-stats-col">
-                        <p><span>پست الکترونیک :</span>@Model.ProfileInformations.Email</p>
-                    </div>
-                </div>
-                <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
-                    <div class="profile-stats-col">
-                        <p style="direction:ltr;">
-                            <span>شماره تلفن همراه :</span>
-                            @if (string.IsNullOrEmpty(Model.ProfileInformations.MobileNumber))
-                            {
-                                @"-".ToString();
-                            }
-                            else
-                            {
-                        @Model.ProfileInformations.MobileNumber.Remove(5, 4).Insert(5, "****")
-                            }
-                        </p>
                     </div>
                 </div>
                 <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
@@ -58,6 +62,40 @@
                         </p>
                     </div>
                 </div>
+                <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
+                    <div class="profile-stats-col">
+                        <p>
+                            <span>پست الکترونیک :</span>@Model.ProfileInformations.Email
+                            @if (await _userManager.IsEmailConfirmedAsync(user))
+                            {
+                                <br />
+                                <span class="badge badge-pill badge-success" style="padding:0px 5px;color:white;font-size:12px;display:inline;">تایید شده</span>
+                            }
+                        </p>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
+                    <div class="profile-stats-col">
+                        <p style="direction:ltr;">
+                            <span style="direction:rtl;">شماره تلفن همراه :</span>
+                            @if (string.IsNullOrEmpty(Model.ProfileInformations.MobileNumber))
+                            {
+                                @Html.Raw("-")
+                            }
+                            else
+                            {
+                                @Model.ProfileInformations.MobileNumber.Remove(5, 4).Insert(5, "****")
+                                @if (await _userManager.IsPhoneNumberConfirmedAsync(user))
+                                {
+                                    <br />
+                                    <span class="badge badge-pill badge-success" style="padding:0px 5px;color:white;font-size:12px;display:inline;">تایید شده</span>
+                                }
+                            }
+                        </p>
+
+                    </div>
+                </div>
+
                 <div class="col-lg-6 col-md-6 col-xs-12 pull-right" style="padding:0;">
                     <div class="profile-stats-col">
                         <p><span>دریافت خبرنامه :</span>@((Model.ProfileInformations.NewsSubscribe) ? "بله":"خیر")</p>
@@ -88,7 +126,7 @@
     <!--End PersonalInfo-->
     <!--Favorites-->
     <div class="col-lg-6 col-xs-12 pull-right">
-        <div class="headline-profile headline-profile-favorites">
+        <div class="headline-profile headline-profile-favorites" style="margin-top:0;">
             <span>لیست علاقه مندی</span>
         </div>
         <div class="profile-stats">

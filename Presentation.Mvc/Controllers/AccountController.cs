@@ -246,7 +246,7 @@ namespace Presentation.Mvc.Controllers
                 var user = await _userManager.FindByEmailAsync(model.Email);
                 if (user != null)
                 {
-                    var resetPassToken =await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var resetPassToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 
                     var emailMessage = Url.Action("ResetPassword", "Account", new { userName = user.UserName, token = resetPassToken }, Request.Scheme);
                     var body = await this.RenderViewAsync("~/Views/EmailTemplates/ResetPasswordEmailTemplate.cshtml", emailMessage);
@@ -266,7 +266,7 @@ namespace Presentation.Mvc.Controllers
                             ShowCancelButton = false
                         });
 
-                       return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
@@ -309,11 +309,11 @@ namespace Presentation.Mvc.Controllers
 
             if (ModelState.IsValid)
             {
-                var user =await _userManager.FindByNameAsync(model.UserName);
+                var user = await _userManager.FindByNameAsync(model.UserName);
                 if (user == null)
                     return NotFound();
 
-                var result =await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
 
                 if (result.Succeeded)
                 {
@@ -328,13 +328,13 @@ namespace Presentation.Mvc.Controllers
                         ShowCancelButton = false
                     });
 
-                   return RedirectToAction("Login", "Account");
+                    return RedirectToAction("Login", "Account");
                 }
                 else
                 {
-                    foreach(var error in result.Errors)
+                    foreach (var error in result.Errors)
                     {
-                        ModelState.AddModelError(error.Code,error.Description);
+                        ModelState.AddModelError(error.Code, error.Description);
 
                     }
                 }
@@ -343,5 +343,199 @@ namespace Presentation.Mvc.Controllers
             return View(model);
 
         }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult ChangePassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.Password);
+
+                if (result.Succeeded)
+                {
+                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
+                    {
+                        Title = "تغییر رمزعبور",
+                        Text = "رمزعبور شما با موفقیت تغییر کرد لطفا با رمزعبور جدید وارد شوید",
+                        Icon = SweetAlertIcon.success,
+                        ShowCloseButton = false,
+                        CancelButtonText = "",
+                        ComfirmButtonText = "حله",
+                        ShowCancelButton = false
+                    });
+
+                    await _signInManager.SignOutAsync();
+
+                    return RedirectToAction("Login", "Account");
+                }
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(error.Code, error.Description);
+                }
+            }
+            return View(model);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> VerifyMobile([FromServices] ISmsSender smsSender)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (DateTime.Now>user.SendPhoneConfirmationSmsLimitUntil)
+            {
+
+                if (await _userManager.IsPhoneNumberConfirmedAsync(user))
+                {
+                    return RedirectToAction("Index", "Profile");
+                }
+
+                user.SendPhoneConfirmationSmsLimitUntil = DateTime.Now.AddMinutes(3);
+                await _userManager.UpdateAsync(user);
+                user = await _userManager.GetUserAsync(User);
+
+                var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
+                string message = $"کد تایید شما در دیجی استور: {token}";
+
+                //تغییر ارسال پیام
+                smsSender.SendMessage(message, new string[] { user.PhoneNumber }, "30004747475547", SmsSetting.testSms);
+                //
+            }
+            else
+            {
+                var remainingTime = user.SendPhoneConfirmationSmsLimitUntil - DateTime.Now;
+                string error = "";
+                error = "کد تایید به تازگی ارسال شده است\nارسال مجدد در ";
+
+                if (remainingTime.Minutes > 0)
+                {
+                    error += remainingTime.Minutes + " دقیقه ";
+
+                    if(remainingTime.Seconds>0)
+                        error +="و "+ remainingTime.Seconds + " ثانیه ";
+
+                }
+                else
+                {
+
+                    if (remainingTime.Seconds > 0)
+                        error +=  remainingTime.Seconds + " ثانیه ";
+                }
+
+                error += " دیگر امکان پذیر میباشد";
+                ViewData["Errors"] = error;
+            }
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> VerifyMobile(string d1, string d2, string d3, string d4, string d5, string d6)
+        {
+            string errors = "";
+
+            string token = d1 + d2 + d3 + d4 + d5 + d6;
+            if (!string.IsNullOrEmpty(token))
+            {
+                var user = await _userManager.GetUserAsync(User);
+
+                var result = await _userManager.ChangePhoneNumberAsync(user, user.PhoneNumber, token);
+
+                if (result.Succeeded)
+                {
+                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
+                    {
+                        Title = "تایید شماره موبایل",
+                        Text = "شماره تلفن شما با موفقیت تایید شد",
+                        Icon = SweetAlertIcon.success,
+                        ShowCloseButton = false,
+                        CancelButtonText = "",
+                        ComfirmButtonText = "حله",
+                        ShowCancelButton = false
+                    });
+
+
+                    return RedirectToAction("Index", "Profile");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        errors += error.Description + "\n";
+                    }
+                }
+            }
+            else
+            {
+                errors += "لطفا کد امنیتی را صحیح وارد کنید";
+            }
+            ViewData["Errors"] = errors;
+            return View();
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> VerifyEmail()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                var emailComfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var emailMessage = Url.Action("ComfirmEmail", "Account", new { userName = user.UserName, token = emailComfirmationToken }, Request.Scheme);
+                var body = await this.RenderViewAsync("~/Views/EmailTemplates/EmailComfirmationTemplate.cshtml", emailMessage);
+
+                var emailResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Email Comfirmation", body, user.Email, true);
+
+                if (emailResult.IsSuccess)
+                {
+                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
+                    {
+                        Title = "تایید ایمیل",
+                        Text = "ایمیل تایید برای شما ارسال شد",
+                        Icon = SweetAlertIcon.success,
+                        ShowCloseButton = false,
+                        CancelButtonText = "",
+                        ComfirmButtonText = "حله",
+                        ShowCancelButton = false
+                    });
+                }
+                else
+                {
+                    string errorMsg = "خطایی در ارسال ایمیل تایید بوجود آمد.";
+
+                    foreach (var error in emailResult.Errors)
+                    {
+                        errorMsg += "\n" + error + ". ";
+                    }
+                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
+                    {
+                        Title = "بروز خطا",
+                        Text = errorMsg,
+                        Icon = SweetAlertIcon.error,
+                        ShowCloseButton = false,
+                        CancelButtonText = "",
+                        ComfirmButtonText = "حله",
+                        ShowCancelButton = false
+                    });
+                }
+            }
+
+
+            return RedirectToAction("Index", "Profile");
+        }
+
+
+
     }
 }

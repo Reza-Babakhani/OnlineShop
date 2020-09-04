@@ -1,4 +1,4 @@
-﻿using Application.Constants;
+﻿
 using Application.Interfaces;
 using Infrastructure.Contexts;
 using Infrastructure.Identity;
@@ -37,6 +37,9 @@ namespace Infrastructure.IoC
             services.AddTransient<IDataProtection, DataProtection>();
 
             services.AddScoped<IEmailSender, EmailSender>();
+
+            services.AddScoped<ISmsSender, SmsSender>();
+
 
 
         }

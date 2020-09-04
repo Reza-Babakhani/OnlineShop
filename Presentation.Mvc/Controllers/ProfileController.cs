@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Interfaces;
 using Application.Utilities;
+using Application.ViewModels.Account;
 using Application.ViewModels.Profile;
 using Domain.Models;
 using Infrastructure.Identity;
@@ -21,11 +22,14 @@ namespace Presentation.Mvc.Controllers
     public class ProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+
         private readonly IEmailSender _emailSender;
 
-        public ProfileController(UserManager<ApplicationUser> userManager,IEmailSender emailSender)
+        public ProfileController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
             _emailSender = emailSender;
         }
 
@@ -76,7 +80,7 @@ namespace Presentation.Mvc.Controllers
             model.MobileNumber = user.PhoneNumber;
             model.NewsSubscribe = user.NewsSubscribe;
             model.PersonalCode = user.PersonalCode;
-            if(user.BirthDay.Year>=650 && user.BirthDay.Month!=0 && user.BirthDay.Day != 0)
+            if (user.BirthDay.Year >= 650 && user.BirthDay.Month != 0 && user.BirthDay.Day != 0)
             {
                 model.BirthDayDay = PersianDateHelper.GetPersianDay(user.BirthDay);
                 model.BirthDayMonth = PersianDateHelper.GetPersianMonth(user.BirthDay);
@@ -116,11 +120,11 @@ namespace Presentation.Mvc.Controllers
                 if (user.PhoneNumber != model.MobileNumber)
                 {
                     user.PhoneNumber = model.MobileNumber;
-                    user.PhoneNumberConfirmed = false;            
+                    user.PhoneNumberConfirmed = false;
                 }
 
 
-                var result=  await _userManager.UpdateAsync(user);
+                var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
                 {
@@ -143,7 +147,7 @@ namespace Presentation.Mvc.Controllers
                         ComfirmButtonText = "حله",
                         ShowCancelButton = false
                     });
-                  return  RedirectToAction("Index");
+                    return RedirectToAction("Index");
                 }
                 else
                 {
@@ -153,16 +157,12 @@ namespace Presentation.Mvc.Controllers
 
                     }
                 }
-                
+
             }
             ViewBag.SideBarModel = await GetSideBarViewModel();
             return View(model);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ChangePassword()
-        {
-            return View();
-        }
+       
     }
 }

@@ -24,7 +24,7 @@ namespace Application.ViewModels.Account
         [PersianRequired]
         [Display(Name = "رمزعبور")]
         [DataType(DataType.Password)]
-        [Compare(nameof(Password), ErrorMessage = "{0} با تکرار آن یکسان نمیباشد")]
+        [Compare(nameof(ConfirmPassword), ErrorMessage = "{0} با تکرار آن یکسان نمیباشد")]
         public string Password { get; set; }
 
         [PersianRequired]

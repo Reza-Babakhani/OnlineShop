@@ -123,15 +123,15 @@
                                             <div class="header-profile-dropdown-user-info">
 
 
-                                                @if (string.IsNullOrEmpty(user.FirstName) || string.IsNullOrEmpty(user.FirstName))
+                                                @if (string.IsNullOrEmpty(user?.FirstName) || string.IsNullOrEmpty(user?.FirstName))
                                                 {
                                                     <p class="header-profile-dropdown-user-name">
-                                                        @user.Email
+                                                        @user?.Email
                                                     </p>
                                                 }
                                                 else
                                                 {
-                                                    <p class="header-profile-dropdown-user-name"> @user.FirstName @user.LastName</p>
+                                                    <p class="header-profile-dropdown-user-name"> @user?.FirstName @user?.LastName</p>
 
                                                 }
                                                 @*<span class="header-profile-dropdown-user-profile-link">مشاهده حساب کاربری</span>*@

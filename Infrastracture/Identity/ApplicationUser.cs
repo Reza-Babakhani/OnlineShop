@@ -29,5 +29,7 @@ namespace Infrastructure.Identity
 
         public string ImagePath { get; set; }
 
+        public DateTime SendPhoneConfirmationSmsLimitUntil { get; set; }
+
     }
 }

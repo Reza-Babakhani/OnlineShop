@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Application.Constants
+namespace Infrastructure.IoC
 {
    public static class ConnsetionStrings
     {
