@@ -16,7 +16,7 @@ namespace Application.Interfaces
 
         IList<string> GetLineNumbers(SmsSetting ss);
 
-        bool SendMessage(string message, string[] mobiles, string lineNumber, SmsSetting ss);
+        OperationResult SendMessage(string message, string[] mobiles, string lineNumber, SmsSetting ss);
 
         SentMessage[] GetSentMessage(SmsSetting ss, int pageNumber, string fromDate, string toDate);
 

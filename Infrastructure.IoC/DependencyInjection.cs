@@ -35,10 +35,11 @@ namespace Infrastructure.IoC
                 .AddErrorDescriber<PersianIdentityErrorDescriber>();
 
             services.AddTransient<IDataProtection, DataProtection>();
+           
+            services.AddTransient<ISmsSender, SmsSender>();
 
             services.AddScoped<IEmailSender, EmailSender>();
 
-            services.AddScoped<ISmsSender, SmsSender>();
 
 
 

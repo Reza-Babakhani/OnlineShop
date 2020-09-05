@@ -1,4 +1,5 @@
 ﻿using Application.Attributes;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -40,6 +41,7 @@ namespace Application.ViewModels.Profile
         [PersianRequired]
         [PersianMaxLenght(11)]
         [PersianMinLenght(11)]
+       //[Remote("IsPhoneInUse", "Profile", HttpMethod = "POST", AdditionalFields = "__RequestVerificationToken")]
         public string MobileNumber { get; set; }
 
         [Display(Name = "پست الکترونیک")]

@@ -13,6 +13,10 @@ using Presentation.Mvc.Extensions;
 using Presentation.Mvc.Models;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Query;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.Antiforgery;
+using System.Net;
 
 namespace Presentation.Mvc.Controllers
 {
@@ -20,16 +24,16 @@ namespace Presentation.Mvc.Controllers
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-
         private readonly IEmailSender _emailSender;
+        private readonly IAntiforgery _antiforgery;
+        
 
-        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IEmailSender emailSender)
+        public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IEmailSender emailSender,IAntiforgery antiforgery)
         {
             _signInManager = signInManager;
             _userManager = userManager;
-
             _emailSender = emailSender;
-
+            _antiforgery = antiforgery;
         }
 
         [HttpGet]
@@ -63,15 +67,20 @@ namespace Presentation.Mvc.Controllers
                 if (result.Succeeded)
                 {
 
-                    var emailComfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var emailMessage = Url.Action("ComfirmEmail", "Account", new { userName = user.UserName, token = emailComfirmationToken }, Request.Scheme);
-                    var body = await this.RenderViewAsync("~/Views/EmailTemplates/EmailComfirmationTemplate.cshtml", emailMessage);
 
-                    var emailResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Email Comfirmation", body, user.Email, true);
+                    await _signInManager.PasswordSignInAsync(user, model.Password, true,false);
+                    if (string.IsNullOrEmpty(returnUrl))
+                    {
+                        returnUrl = "/Account/Wellcome";
+                    }
 
-
-                    return RedirectToAction("Wellcome", "Account", new { returnUrl = returnUrl });
-
+                    string requestToken = _antiforgery.GetTokens(HttpContext).RequestToken;
+                    return new ContentResult
+                    {
+                        ContentType = "text/html",
+                        StatusCode = (int)HttpStatusCode.OK,
+                        Content = "<html><body><form action = '/MessageSender/SendEmailComfirmationMessage' id = 'frmTest' method = 'post' ><input type = 'hidden' name = 'userId' value = '" + user.Id + "' /><input type = 'hidden' name = 'returnUrl' value = '"+returnUrl+"' /><input name = '__RequestVerificationToken' type = 'hidden' value = '" + requestToken + "' /></form><script> document.getElementById('frmTest').submit();</script></body></html>"
+                    };
                 }
 
                 foreach (var error in result.Errors)
@@ -95,7 +104,7 @@ namespace Presentation.Mvc.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ComfirmEmail(string userName, string token)
+        public async Task<IActionResult> ConfirmEmail(string userName, string token)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(token))
                 return NotFound();
@@ -194,7 +203,8 @@ namespace Presentation.Mvc.Controllers
             return View(model);
         }
 
-        [HttpGet]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -251,9 +261,9 @@ namespace Presentation.Mvc.Controllers
                     var emailMessage = Url.Action("ResetPassword", "Account", new { userName = user.UserName, token = resetPassToken }, Request.Scheme);
                     var body = await this.RenderViewAsync("~/Views/EmailTemplates/ResetPasswordEmailTemplate.cshtml", emailMessage);
 
-                    var emailResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Email Comfirmation", body, user.Email, true);
+                    var sendResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Forget Password", body, user.Email, true);
 
-                    if (emailResult.IsSuccess)
+                    if (sendResult.IsSuccess)
                     {
                         TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
                         {
@@ -393,7 +403,7 @@ namespace Presentation.Mvc.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (DateTime.Now>user.SendPhoneConfirmationSmsLimitUntil)
+            if (DateTime.Now > user.SendPhoneConfirmationSmsLimitUntil)
             {
 
                 if (await _userManager.IsPhoneNumberConfirmedAsync(user))
@@ -405,12 +415,23 @@ namespace Presentation.Mvc.Controllers
                 await _userManager.UpdateAsync(user);
                 user = await _userManager.GetUserAsync(User);
 
+
                 var token = await _userManager.GenerateChangePhoneNumberTokenAsync(user, user.PhoneNumber);
                 string message = $"کد تایید شما در دیجی استور: {token}";
 
                 //تغییر ارسال پیام
-                smsSender.SendMessage(message, new string[] { user.PhoneNumber }, "30004747475547", SmsSetting.testSms);
+                var sendResult = smsSender.SendMessage(message, new string[] { user.PhoneNumber }, "30004747475547", SmsSetting.testSms);
                 //
+
+                if (!sendResult.IsSuccess)
+                {
+                    string errors = "";
+                    foreach (var error in sendResult.Errors)
+                        errors += errors + "\n";
+
+                    ViewData["Errors"] = errors;
+
+                }
             }
             else
             {
@@ -422,15 +443,15 @@ namespace Presentation.Mvc.Controllers
                 {
                     error += remainingTime.Minutes + " دقیقه ";
 
-                    if(remainingTime.Seconds>0)
-                        error +="و "+ remainingTime.Seconds + " ثانیه ";
+                    if (remainingTime.Seconds > 0)
+                        error += "و " + remainingTime.Seconds + " ثانیه ";
 
                 }
                 else
                 {
 
                     if (remainingTime.Seconds > 0)
-                        error +=  remainingTime.Seconds + " ثانیه ";
+                        error += remainingTime.Seconds + " ثانیه ";
                 }
 
                 error += " دیگر امکان پذیر میباشد";
@@ -491,49 +512,21 @@ namespace Presentation.Mvc.Controllers
             var user = await _userManager.GetUserAsync(User);
             if (!await _userManager.IsEmailConfirmedAsync(user))
             {
-                var emailComfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                var emailMessage = Url.Action("ComfirmEmail", "Account", new { userName = user.UserName, token = emailComfirmationToken }, Request.Scheme);
-                var body = await this.RenderViewAsync("~/Views/EmailTemplates/EmailComfirmationTemplate.cshtml", emailMessage);
 
-                var emailResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Email Comfirmation", body, user.Email, true);
-
-                if (emailResult.IsSuccess)
+                return new ContentResult
                 {
-                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
-                    {
-                        Title = "تایید ایمیل",
-                        Text = "ایمیل تایید برای شما ارسال شد",
-                        Icon = SweetAlertIcon.success,
-                        ShowCloseButton = false,
-                        CancelButtonText = "",
-                        ComfirmButtonText = "حله",
-                        ShowCancelButton = false
-                    });
-                }
-                else
-                {
-                    string errorMsg = "خطایی در ارسال ایمیل تایید بوجود آمد.";
+                    ContentType = "text/html",
+                    StatusCode = (int)HttpStatusCode.OK,
+                    Content = "<html><body><form action = '/MessageSender/SendEmailComfirmationMessage' id = 'frmTest' method = 'post' ><input type = 'hidden' name = 'userId' value = '" + user.Id + "' /><input type = 'hidden' name = 'returnUrl' value = '' /><input name = '__RequestVerificationToken' type = 'hidden' value = '" + _antiforgery.GetAndStoreTokens(HttpContext).RequestToken + "' /></form><script> document.getElementById('frmTest').submit();</script></body></html>"
+                };
 
-                    foreach (var error in emailResult.Errors)
-                    {
-                        errorMsg += "\n" + error + ". ";
-                    }
-                    TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
-                    {
-                        Title = "بروز خطا",
-                        Text = errorMsg,
-                        Icon = SweetAlertIcon.error,
-                        ShowCloseButton = false,
-                        CancelButtonText = "",
-                        ComfirmButtonText = "حله",
-                        ShowCancelButton = false
-                    });
-                }
             }
 
 
             return RedirectToAction("Index", "Profile");
         }
+
+
 
 
 

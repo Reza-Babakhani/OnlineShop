@@ -49,7 +49,7 @@ namespace Infrastructure.Services
         }
 
 
-        public  bool SendMessage(string message, string[] mobiles, string lineNumber, SmsSetting ss)
+        public  OperationResult SendMessage(string message, string[] mobiles, string lineNumber, SmsSetting ss)
         {
 
 
@@ -64,9 +64,12 @@ namespace Infrastructure.Services
 
             MessageSendResponseObject messageSendResponseObject = new MessageSend().Send(GetToken(ss), messageSendObject);
 
-            return messageSendResponseObject.IsSuccessful;
+            OperationResult result = new OperationResult();
+            result.IsSuccess = messageSendResponseObject.IsSuccessful;
 
-
+            result.Errors.Add(new OperationError() {Code="Sms Response Message",Description=messageSendResponseObject.Message });
+           
+            return result;
         }
 
 

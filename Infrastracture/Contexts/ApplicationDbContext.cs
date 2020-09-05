@@ -18,9 +18,9 @@ namespace Infrastructure.Contexts
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ApplicationUser>()
-                .HasIndex(u => u.PhoneNumber)
-                .IsUnique();
+            //builder.Entity<ApplicationUser>()
+            //    .HasIndex(u => u.PhoneNumber)
+            //    .IsUnique();
         }
     }
 }

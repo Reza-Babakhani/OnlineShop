@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Presentation.Mvc.Controllers;
 
 namespace Presentation.Mvc
 {
@@ -27,8 +28,11 @@ namespace Presentation.Mvc
             services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
 
+            
             //My Dependency Injection
             services.RegisterSevices();
+
+            services.AddTransient<MessageSenderController, MessageSenderController>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

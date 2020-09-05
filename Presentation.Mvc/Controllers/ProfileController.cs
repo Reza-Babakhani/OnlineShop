@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Presentation.Mvc.Extensions;
 using Presentation.Mvc.Models;
@@ -23,14 +24,13 @@ namespace Presentation.Mvc.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-
-        private readonly IEmailSender _emailSender;
-
-        public ProfileController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSender emailSender)
+        private readonly MessageSenderController _messageSender;
+      
+        public ProfileController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,MessageSenderController messageSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _emailSender = emailSender;
+            _messageSender = messageSender;
         }
 
         private async Task<ProfileSideBarViewModel> GetSideBarViewModel()
@@ -127,16 +127,8 @@ namespace Presentation.Mvc.Controllers
                 var result = await _userManager.UpdateAsync(user);
 
                 if (result.Succeeded)
-                {
-                    ///Send comfirmation email
-                    var emailComfirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var emailMessage = Url.Action("ComfirmEmail", "Account", new { userName = user.UserName, token = emailComfirmationToken }, Request.Scheme);
-                    var body = await this.RenderViewAsync("~/Views/EmailTemplates/EmailComfirmationTemplate.cshtml", emailMessage);
-
-                    var emailResult = await _emailSender.SendEmailAsync(EmailSetting.TestEmail, "Email Comfirmation", body, user.Email, true);
-                    ///
-
-
+                { 
+                   
                     TempData["SweetAlert"] = JsonConvert.SerializeObject(new SweetAlert()
                     {
                         Title = "ثبت تغییرات",
@@ -163,6 +155,19 @@ namespace Presentation.Mvc.Controllers
             return View(model);
         }
 
-       
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async  Task<IActionResult> IsPhoneInUse(string MobileNumber)
+        //{
+        //    var phoneExist =await _userManager.Users.AnyAsync(u=>u.PhoneNumber== MobileNumber);
+
+        //    if (!phoneExist)
+        //    {
+        //        return Json(true);
+        //    }
+
+        //    return Json("شماره موبایل انتخاب شده از قبل موجود است");
+        //}
+
     }
 }
