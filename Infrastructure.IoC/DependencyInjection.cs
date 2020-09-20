@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Infrastructure.Contexts;
 using Infrastructure.Identity;
+using Infrastructure.Repositories;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,7 +41,7 @@ namespace Infrastructure.IoC
 
             services.AddScoped<IEmailSender, EmailSender>();
 
-
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
         }
