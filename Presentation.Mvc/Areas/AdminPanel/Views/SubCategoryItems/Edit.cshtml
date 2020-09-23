@@ -1,0 +1,93 @@
+﻿@model Domain.Models.SubCategoryItem
+
+@{
+    ViewData["Title"] = "Edit";
+
+    var subcategoriesJson = ViewData["SubCategoriesJSON"].ToString();
+}
+
+<h2>Edit</h2>
+
+<h4>SubCategoryItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Icon" class="control-label"></label>
+                <input asp-for="Icon" class="form-control" />
+                <span asp-validation-for="Icon" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label for="CategoryId" class="control-label">دسته بندی منو</label>
+                <select id="CategoryId" name="categoryId" class="form-control" asp-items="ViewBag.CategoryId" onchange="categoryChange()"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="SubCategoryId" class="control-label"></label>
+                <select asp-for="SubCategoryId" class="form-control" asp-items="ViewBag.SubCategoryId"></select>
+                <span asp-validation-for="SubCategoryId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+
+<script>
+         var subCatList = JSON.parse('@Html.Raw(subcategoriesJson)');
+
+        function categoryChange() {
+
+            var catsSelect = document.getElementById('CategoryId');
+            var selectedCat = catsSelect.options[catsSelect.selectedIndex].value;
+
+            var subCatsSelect = document.getElementById('SubCategoryId');
+
+            for (i = subCatsSelect.options.length - 1; i >= 0; i--) {
+                subCatsSelect.remove(i);
+            }
+
+            var selectedSubCatsList = [];
+
+            for (i = 0; i < subCatList.length; i++) {
+                if (subCatList[i].CategoryId == selectedCat) {
+                    selectedSubCatsList.push(subCatList[i]);
+                }
+            }
+
+            for (i = 0; i < selectedSubCatsList.length; i++) {
+                var opt = document.createElement('option');
+
+                // create text node to add to option element (opt)
+                opt.appendChild(document.createTextNode(selectedSubCatsList[i].Title));
+
+                // set value property of opt
+                opt.value = selectedSubCatsList[i].Id;
+
+                // add opt to end of select box (sel)
+                subCatsSelect.appendChild(opt);
+            }
+        }
+</script>
+}

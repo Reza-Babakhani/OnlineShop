@@ -1,7 +1,17 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
+
 @{
+
+    //بدلیل اینکه تمپ دیتا توانایی سریالایز آبجکت را در ریدایرکت را ندارد از جی سان استفاده شده
+    SweetAlert sa = new SweetAlert();
+    if (TempData["SweetAlert"] != null)
+    {
+        sa = Newtonsoft.Json.JsonConvert.DeserializeObject<SweetAlert>(TempData["SweetAlert"].ToString());
+    }
+    else
+    {
+        sa = null;
+    }
 }
 <!DOCTYPE html>
 <!--
@@ -29,6 +39,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
           page. However, you can choose any other skin. Make sure you
           apply the skin class to the body tag so the changes take effect. -->
     <link rel="stylesheet" href="~/areas/admin-panel/dist/css/skins/skin-green.min.css">
+
+
+    <link href="~/libs/sweetalert2/sweetalert2.css" rel="stylesheet" />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -80,7 +93,7 @@ desired effect
                 </a>
 
 
-               
+
 
 
                 <div class="navbar-custom-menu">
@@ -368,6 +381,22 @@ desired effect
                 <!-- /.search form -->
                 <!-- Sidebar Menu -->
                 <ul class="sidebar-menu" data-widget="tree">
+
+                    <li class="treeview">
+                        <a href="#">
+                            <i class="fa fa-list-alt"></i> <span>مدیریت دسته بندی</span>
+                            <span class="pull-left-container">
+                                <i class="fa fa-angle-right pull-left"></i>
+                            </span>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a asp-controller="Categories">دسته بندی منو</a></li>
+                            <li><a asp-controller="SubCategories">دسته بندی زیرمنو</a></li>
+                            <li><a asp-controller="SubCategoryItems">دسته بندی محصولات</a></li>
+
+                        </ul>
+                    </li>
+
                     <li class="header">تیتر</li>
                     <!-- Optionally, you can add icons to the links -->
                     <li class="active"><a href="#"><i class="fa fa-link"></i> <span>لینک</span></a></li>
@@ -407,7 +436,7 @@ desired effect
             <!-- Main content -->
             <section class="content container-fluid">
 
-               @RenderBody()
+                @RenderBody()
 
             </section>
             <!-- /.content -->
@@ -510,7 +539,30 @@ desired effect
     <!-- Optionally, you can add Slimscroll and FastClick plugins.
          Both of these plugins are recommended to enhance the
          user experience. -->
+    <script src="~/libs/sweetalert2/sweetalert2.min.js"></script>
 
-    @RenderSection("Scripts",false)
+
+    @RenderSection("Scripts", false)
+
+
+    @if (sa != null)
+    {
+        <script>
+        $(document).ready(function () {
+
+                swal.fire({
+                    title: '@sa.Title',
+                    icon: '@sa.Icon.ToString()',
+                    confirmButtonText: '@sa.ComfirmButtonText',
+                    cancelButtonText: '@sa.CancelButtonText',
+                    showCancelButton:@sa.ShowCancelButton.ToString().ToLower(),
+                    showCloseButton: @sa.ShowCloseButton.ToString().ToLower(),
+                    html: '@sa.Text.ToString()'
+                });
+
+        });
+        </script>
+    }
+
 </body>
 </html>

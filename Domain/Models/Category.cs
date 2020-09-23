@@ -11,9 +11,13 @@ namespace Domain.Models
         [Key]
         public int Id { get; set; }
 
+        [Required]
+        [MaxLength(50)]
         [Display(Name="نام(انگلیسی)")]
         public string Name { get; set; }
 
+        [MaxLength(50)]
+        [Required]
         [Display(Name="عنوان نمایشی")]
         public string Title { get; set; }
 
