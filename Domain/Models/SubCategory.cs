@@ -24,6 +24,7 @@ namespace Domain.Models
         [Display(Name = "آیکون")]
         public string Icon { get; set; }
 
+        [Display(Name = "دسته بندی")]
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
 

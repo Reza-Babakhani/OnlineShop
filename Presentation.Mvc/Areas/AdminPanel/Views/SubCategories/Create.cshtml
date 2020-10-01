@@ -1,12 +1,10 @@
 ﻿@model Domain.Models.SubCategory
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "افزودن زیرمنو";
 }
 
-<h2>Create</h2>
 
-<h4>SubCategory</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -32,14 +30,14 @@
                 <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="ثبت" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">بازگشت</a>
 </div>
 
 @section Scripts {

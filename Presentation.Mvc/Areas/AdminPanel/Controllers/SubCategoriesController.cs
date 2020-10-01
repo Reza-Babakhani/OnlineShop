@@ -48,26 +48,7 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
             return View(applicationDbContext.ToList());
         }
 
-        // GET: AdminPanel/SubCategories/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var subCategory = (await _context.SubCategories.GetAsync(
-                where: n => n.Id == id,
-                includeProperties: "Category")).FirstOrDefault();
-
-            if (subCategory == null)
-            {
-                return NotFound();
-            }
-
-            return View(subCategory);
-        }
-
+       
         // GET: AdminPanel/SubCategories/Create
         public async Task<IActionResult> CreateAsync()
         {
@@ -161,8 +142,8 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
             return View(subCategory);
         }
 
-        // GET: AdminPanel/SubCategories/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: AdminPanel/SubCategories/DetailsAndDelete/5
+        public async Task<IActionResult> DetailsAndDelete(int? id)
         {
             if (id == null)
             {
@@ -170,8 +151,8 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
             }
 
             var subCategory = (await _context.SubCategories.GetAsync(
-                 where: n => n.Id == id,
-                 includeProperties: "Category")).FirstOrDefault();
+                where: n => n.Id == id,
+                includeProperties: "Category")).FirstOrDefault();
 
             if (subCategory == null)
             {
@@ -180,6 +161,7 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
 
             return View(subCategory);
         }
+
 
         // POST: AdminPanel/SubCategories/Delete/5
         [HttpPost, ActionName("Delete")]

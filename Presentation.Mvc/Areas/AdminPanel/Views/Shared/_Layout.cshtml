@@ -390,9 +390,9 @@ desired effect
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a asp-controller="Categories">دسته بندی منو</a></li>
-                            <li><a asp-controller="SubCategories">دسته بندی زیرمنو</a></li>
-                            <li><a asp-controller="SubCategoryItems">دسته بندی محصولات</a></li>
+                            <li><a asp-controller="Categories" asp-action="Index">دسته بندی منو</a></li>
+                            <li><a asp-controller="SubCategories" asp-action="Index">دسته بندی زیرمنو</a></li>
+                            <li><a asp-controller="SubCategoryItems" asp-action="Index">دسته بندی محصولات</a></li>
 
                         </ul>
                     </li>
@@ -424,12 +424,12 @@ desired effect
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    عنوان صفحه
-                    <small>توضیحات</small>
+                    @ViewData["Title"]
+                    <small>@ViewData["Description"]</small>
                 </h1>
                 <ol class="breadcrumb">
-                    <li><a href="#"><i class="fa fa-dashboard"></i> خانه</a></li>
-                    <li class="active">صفحه</li>
+                    <li><a asp-controller="Home" asp-action="Index"><i class="fa fa-dashboard"></i> خانه</a></li>
+                    @*<li class="active">صفحه</li>*@
                 </ol>
             </section>
 

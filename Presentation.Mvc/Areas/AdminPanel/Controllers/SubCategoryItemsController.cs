@@ -48,28 +48,10 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
             return View(applicationDbContext.ToList());
         }
 
-        // GET: AdminPanel/SubCategoryItems/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var subCategoryItem = (await _context.SubCategoryItems.GetAsync(
-                where: n => n.Id == id,
-                includeProperties: "SubCategory")).FirstOrDefault();
-
-            if (subCategoryItem == null)
-            {
-                return NotFound();
-            }
-
-            return View(subCategoryItem);
-        }
+       
 
         // GET: AdminPanel/SubCategoryItems/Create
-        public async Task<IActionResult> CreateAsync()
+        public async Task<IActionResult> Create()
         {
             if ((await _context.SubCategories.GetAsync()).Count() == 0)
             {
@@ -197,8 +179,8 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
             return View(subCategoryItem);
         }
 
-        // GET: AdminPanel/SubCategoryItems/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: AdminPanel/SubCategoryItems/DetailsAndDelete/5
+        public async Task<IActionResult> DetailsAndDelete(int? id)
         {
             if (id == null)
             {
@@ -206,8 +188,8 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
             }
 
             var subCategoryItem = (await _context.SubCategoryItems.GetAsync(
-                 where: n => n.Id == id,
-                 includeProperties: "SubCategory")).FirstOrDefault();
+                where: n => n.Id == id,
+                includeProperties: "SubCategory")).FirstOrDefault();
 
             if (subCategoryItem == null)
             {
@@ -216,6 +198,7 @@ namespace Presentation.Mvc.Areas.AdminPanel.Controllers
 
             return View(subCategoryItem);
         }
+
 
         // POST: AdminPanel/SubCategoryItems/Delete/5
         [HttpPost, ActionName("Delete")]

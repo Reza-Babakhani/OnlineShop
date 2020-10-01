@@ -1,0 +1,107 @@
+﻿@model Domain.Models.SubCategory
+@inject Application.Interfaces.IUnitOfWork _context;
+@{
+    ViewData["Title"] = Model.Title;
+
+    var subCategoryItems = (await _context.SubCategoryItems.GetAsync(n => n.SubCategoryId == Model.Id)).ToList();
+}
+
+
+<div>
+  
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Icon)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Icon)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Category.Id)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" id="btn-submit" value="حذف" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-default">بازگشت</a>
+    </form>
+
+    <hr />
+    <h3>موارد زیرمنو(دسته بندی محصولات زیرمنو)</h3>
+    <hr />
+    <table class="table" style="direction:rtl">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">نام</th>
+                <th scope="col">عنوان</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+
+
+            @{
+                int counter = 1;
+
+
+                foreach (var item in subCategoryItems)
+                {
+
+                    <tr>
+                        <th scope="row">@counter</th>
+                        <td>@item.Name</td>
+                        <td>@item.Title</td>
+                        <td><a asp-action="DetailsAndDelete" asp-route-Id="@item.Id" asp-controller="SubCategoryItems" class="btn btn-sm btn-primary">نمایش</a></td>
+                    </tr>
+
+
+                    counter++;
+                }
+
+            }
+
+
+        </tbody>
+    </table>
+
+</div>
+
+@section Scripts{
+
+    <script>
+        $('#btn-submit').on('click', function (e) {
+            e.preventDefault();
+            var form = $(this).parents('form');
+            swal.fire({
+                title: "حذف دسته بندی زیرمنو",
+                text: "هشدار جدی: تمامی زیردسته بندی ها و محصولات های آن ها حذف میشوند",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "حذف",
+                cancelButtonText: "لغو"
+
+            }).then(
+                function () { form.submit(); },
+                function () { return false; });;
+        });
+    </script>
+}

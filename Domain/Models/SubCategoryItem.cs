@@ -24,10 +24,11 @@ namespace Domain.Models
         [Display(Name = "آیکون")]
         public string Icon { get; set; }
 
+        [Display(Name = "زیرمنو")]
         [ForeignKey("SubCategory")]
         public int SubCategoryId { get; set; }
 
-        [Display(Name = "دسته بندی")]
+        [Display(Name = "زیرمنو")]
         public SubCategory SubCategory { get; set; }
     }
 }

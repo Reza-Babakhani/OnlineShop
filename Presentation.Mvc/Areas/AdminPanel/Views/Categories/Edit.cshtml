@@ -1,12 +1,11 @@
 ﻿@model Domain.Models.Category
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "ویرایش دسته بندی منو";
 }
 
-<h2>Edit</h2>
 
-<h4>Category</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -29,14 +28,14 @@
                 <span asp-validation-for="Icon" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
+                <input type="submit" value="ویرایش" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">بازگشت</a>
 </div>
 
 @section Scripts {
