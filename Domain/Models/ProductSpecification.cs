@@ -16,8 +16,10 @@ namespace Domain.Models
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
+        [Display(Name = "عنوان")]
         public string Title { get; set; }
 
+        [Display(Name = "مقدار")]
         public string Value { get; set; }
 
     }

@@ -26,17 +26,27 @@ namespace Domain.Models
         public int ProductId { get; set; }
 
         [ForeignKey("Warranty")]
+        [Display(Name = "گارانتی")]
         public int WarrantyId { get; set; }
 
+        [Display(Name = "گارانتی")]
         public Warranty Warranty { get; set; }
 
+        [Display(Name = "نوع")]
         public int OptionType { get; set; }//ProductOptions Enum
 
-        public string Description { get; set; }//مقدار نمایشی
+        [Display(Name = "مقدار نمایشی")]
+        public string DisplayValue { get; set; }//مقدار نمایشی
 
+        [Display(Name = "کد رنگ یا واحد اندازه گیری")]
         public string Value { get; set; }//کد رنگی یا واحد اندازه گیری
 
+        [Display(Name = "توضیحات")]
+        public string Description { get; set; }
 
+        [Display(Name = "کد گزینه انتخابی")]
+        [Required]
+        public string Code { get; set; }
 
         public ICollection<ProductPrices> Prices { get; set; }//جدید ترین ردیف اخرین قیمت میباشد
 

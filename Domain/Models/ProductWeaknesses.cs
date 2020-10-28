@@ -16,7 +16,8 @@ namespace Domain.Models
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
-        public string Text { get; set; }
+        [Display(Name = "نقاط ضعف")]
+        public string Weaknesses { get; set; }
         //seprate with comma or enter
     }
 

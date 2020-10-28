@@ -16,6 +16,7 @@ namespace Domain.Models
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
+        [Display(Name ="محتوی بررسی تخصصی")]
         public string HtmlBody { get; set; }
 
         [DataType(DataType.DateTime)]

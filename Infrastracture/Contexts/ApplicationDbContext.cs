@@ -32,6 +32,34 @@ namespace Infrastructure.Contexts
 
         public DbSet<SubCategoryItem> SubCategoryItems { get; set; }
 
+
+        public DbSet<Product> Products { get; set; }
+
+        public DbSet<ProductOptions> ProductOptions { get; set; }
+
+
+        public DbSet<Warranty> Warranties { get; set; }
+
+        public DbSet<ProductPrices> ProductPrices { get; set; }
+
+
+        public DbSet<Inventory> Inventories { get; set; }
+
+        public DbSet<ProductDetails> ProductDetails { get; set; }
+
+        public DbSet<Brand> Brands { get; set; }
+
+        public DbSet<ProductImages> ProductImages { get; set; }
+
+        public DbSet<ProductStrengths> ProductStrengths { get; set; }
+
+        public DbSet<ProductWeaknesses> ProductWeaknesses { get; set; }
+
+        public DbSet<ProductSpecification> ProductSpecifications { get; set; }
+
+        public DbSet<SpecialReview> SpecialReviews { get; set; }
+
+
     }
 }
 

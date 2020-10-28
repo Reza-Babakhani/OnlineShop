@@ -16,11 +16,15 @@ namespace Domain.Models
         [ForeignKey("Option")]
         public int OptionId { get; set; }
 
+        [Display(Name = "قیمت")]
+        [Required]
         public ulong Price { get; set; }
 
         [DataType(DataType.DateTime)]
+        [Display(Name = "تاریخ ثبت")]
         public DateTime SubmitDate { get; set; }
 
+        [Display(Name = "علت ثبت قیمت جدید")]
         public string Description { get; set; }
 
         

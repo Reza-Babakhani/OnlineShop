@@ -17,8 +17,10 @@ namespace Domain.Models
         [ForeignKey("Product")]
         public int ProductId { get; set; }
 
+        [Display(Name = "توضیحات")]
         public string ImageAlt { get; set; }
 
+        [Display(Name = "مسیر")]
         public string ImagePath { get; set; }
 
        
